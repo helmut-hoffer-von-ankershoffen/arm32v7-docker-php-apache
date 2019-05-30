@@ -1,0 +1,26 @@
+---
+
+- name: "Check all hosts accessible"
+  assert:
+    that:
+      - ansible_play_hosts == ansible_play_hosts_all
+
+- name: "Create images directory"
+  file:
+    state: directory
+    path: /home/admin/images/
+
+- name: "Copy image"
+  copy:
+    src: ../images/arm32v7-docker-php-apache.tar
+    dest: /home/admin/images/arm32v7-docker-php-apache.tar
+
+- name: "Load and push image"
+  docker_image:
+    name: arm32v7-docker-php-apache
+    tag: latest
+    source: load
+    load_path: /home/admin/images/arm32v7-docker-php-apache.tar
+    force_source: yes
+    push: yes
+    repository: localhost:5001/helmuthva/arm32v7-docker-php-apache
